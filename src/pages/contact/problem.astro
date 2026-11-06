@@ -1,0 +1,15 @@
+---
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import { site } from "@/data/site";
+---
+
+<Sample title="Your ticket wasn’t sent | MJ’s Upholstery" description="There was a problem sending your job ticket to MJ’s Upholstery.">
+  <SamplePage
+    tone="oxblood"
+    title="Your ticket wasn’t sent."
+    lead={`Something in the form didn’t go through, or the photos were too large. Please try again with fewer photos, or call ${site.phone}.`}
+  >
+    <a href="/contact" class="patch patch-cream justify-self-start">Back to the form</a>
+  </SamplePage>
+</Sample>

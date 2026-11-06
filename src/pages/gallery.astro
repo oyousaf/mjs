@@ -1,0 +1,76 @@
+---
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import Swatch from "@/components/Swatch.astro";
+import Lightbox from "@/components/Lightbox.astro";
+import SendPhotos from "@/components/SendPhotos.astro";
+import { categories, jobs } from "@/data/work";
+---
+
+<Sample
+  title="Gallery of Upholstery Work | MJ’s Upholstery, Bedford"
+  description="Before and after photos of MJ’s work: car interiors, convertible hoods, motorcycle seats, boat seating and furniture."
+>
+  <SamplePage tone="panel" title="Gallery" lead="Off the bench and back on the road, the water or the living room floor." />
+
+  <section class="pinked grid gap-6 bg-page py-10 gutter">
+    <h2 class="sr-only">All jobs</h2>
+    <div data-filters hidden>
+      <div role="group" aria-label="Filter the gallery" class="flex flex-wrap gap-2">
+        <button type="button" data-filter="all" aria-pressed="true" class="filter">All work</button>
+        {categories.map((c) => <button type="button" data-filter={c.id} aria-pressed="false" class="filter">{c.label}</button>)}
+      </div>
+      <p data-count role="status" class="mt-3 text-muted">{jobs.length} jobs</p>
+    </div>
+    <div class="rail" data-rail>{jobs.map((j) => <Swatch job={j} />)}</div>
+  </section>
+
+  <SendPhotos line="Got something like this? Send us a photo." />
+  <Lightbox />
+</Sample>
+
+<style>
+  .filter {
+    min-height: 2.9rem;
+    padding: 0.4rem 1.1rem;
+    border: 1.5px dashed var(--color-rule);
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .filter[aria-pressed="true"] {
+    border-style: solid;
+    border-color: var(--color-action);
+    background: var(--color-action);
+    color: var(--color-on-action);
+  }
+</style>
+
+<script>
+  const panel = document.querySelector<HTMLElement>("[data-filters]")!;
+  const count = document.querySelector<HTMLElement>("[data-count]")!;
+  const buttons = [...panel.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+  const cards = [...document.querySelectorAll<HTMLElement>("[data-job]")];
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  panel.hidden = false;
+
+  async function choose(button: HTMLButtonElement) {
+    const filter = button.dataset.filter;
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+    const shown = cards.filter((card) => {
+      const match = filter === "all" || card.dataset.category === filter;
+      card.hidden = !match;
+      return match;
+    });
+    count.textContent = `${shown.length} ${shown.length === 1 ? "job" : "jobs"}`;
+
+    if (calm) return;
+    // Motion is only fetched when somebody actually filters.
+    const { animate, stagger } = await import("motion");
+    animate(shown, { opacity: [0, 1], y: [14, 0] }, { duration: 0.28, delay: stagger(0.03), ease: "easeOut" });
+  }
+
+  buttons.forEach((b) => b.addEventListener("click", () => choose(b)));
+</script>

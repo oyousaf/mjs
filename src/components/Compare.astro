@@ -1,0 +1,34 @@
+---
+import { Picture } from "astro:assets";
+import { photo } from "@/data/work";
+
+interface Props {
+  before: string;
+  after: string;
+  beforeAlt: string;
+  afterAlt: string;
+  sizes: string;
+}
+
+const { before, after, beforeAlt, afterAlt, sizes } = Astro.props;
+const options = { formats: ["avif", "webp"] as ("avif" | "webp")[], widths: [640, 960, 1400], sizes, loading: "lazy" as const };
+---
+
+<figure class="grid gap-2">
+  <div class="compare" data-compare>
+    <Picture src={photo(before)} alt={beforeAlt} {...options} class="size-full object-cover" />
+    <div class="compare-after">
+      <Picture src={photo(after)} alt={afterAlt} {...options} class="size-full object-cover" />
+    </div>
+    <span class="absolute top-3 left-3 bg-hood px-2 py-0.5 text-sm font-bold text-cream">Before</span>
+    <span class="absolute top-3 right-3 bg-hood px-2 py-0.5 text-sm font-bold text-cream">After</span>
+    <input type="range" min="0" max="100" value="50" aria-label="Move the seam between the before and after photos" />
+  </div>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-compare]").forEach((box) => {
+    const seam = box.querySelector("input");
+    seam?.addEventListener("input", () => box.style.setProperty("--pos", `${seam.value}%`));
+  });
+</script>

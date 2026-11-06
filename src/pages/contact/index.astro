@@ -1,0 +1,161 @@
+---
+import { PUBLIC_PREVIEW } from "astro:env/client";
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import OpenStatus from "@/components/OpenStatus.astro";
+import { JOB_TYPES, MAX_PHOTOS } from "@/lib/quote";
+import { site } from "@/data/site";
+
+const label = "block font-bold";
+const optional = "font-normal text-muted";
+---
+
+<Sample
+  title="Get a Quote | MJ’s Upholstery, Bedford"
+  description="Send MJ’s Upholstery photos of your car interior, hood or furniture for a quote, or call 01234 359977. 3 Alexa Court, Aston Road, Bedford MK42 0LW."
+>
+  <SamplePage tone="page" title="Get a quote" lead="Tell us what needs doing and, if you can, send a photo. Or call Maz, which is often the quickest way." />
+
+  <section class="grid gap-12 pb-16 gutter xl:grid-cols-[minmax(0,7fr)_minmax(0,4fr)]">
+    <form method="post" action="/api/quote" enctype="multipart/form-data" class="ticket grid gap-7 px-5 pt-12 pb-8 sm:grid-cols-2 sm:px-8" data-quote>
+      <h2 class="text-sub sm:col-span-2">Job ticket</h2>
+
+      {
+        PUBLIC_PREVIEW && (
+          <p class="border-2 border-dashed border-muted p-3 sm:col-span-2">
+            This form is in preview, so nothing gets sent yet. Please call {site.phone} to reach MJ’s.
+          </p>
+        )
+      }
+
+      <div>
+        <label for="q-name" class={label}>Your name</label>
+        <input id="q-name" name="name" type="text" autocomplete="name" required maxlength="100" class="ruled" />
+      </div>
+      <div>
+        <label for="q-email" class={label}>Email</label>
+        <input id="q-email" name="email" type="email" autocomplete="email" required maxlength="200" class="ruled" />
+      </div>
+      <div>
+        <label for="q-phone" class={label}>Phone <span class={optional}>(optional)</span></label>
+        <input id="q-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" class="ruled" />
+      </div>
+      <div>
+        <label for="q-type" class={label}>What’s the job?</label>
+        <select id="q-type" name="jobType" class="ruled">
+          {JOB_TYPES.map((t) => <option value={t}>{t}</option>)}
+        </select>
+      </div>
+      <div class="sm:col-span-2">
+        <label for="q-details" class={label}>What needs doing?</label>
+        <p id="q-details-hint" class="mb-2 text-muted">The make and model, or the type of furniture, and any damage.</p>
+        <textarea id="q-details" name="details" rows="6" required minlength="10" maxlength="3000" aria-describedby="q-details-hint" class="ruled"></textarea>
+      </div>
+      <div class="sm:col-span-2">
+        <label for="q-photos" class={label}>Photos <span class={optional}>(optional, up to {MAX_PHOTOS})</span></label>
+        <p id="q-photos-hint" class="mb-2 text-muted">JPEG, PNG or WebP. We’ll shrink large photos before they’re sent.</p>
+        <input
+          id="q-photos"
+          name="photos"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          aria-describedby="q-photos-hint q-photos-status"
+          class="block min-h-11 w-full cursor-pointer file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-sm file:border-2 file:border-dashed file:border-action file:bg-transparent file:px-4 file:font-bold file:text-action"
+        />
+        <p id="q-photos-status" role="status" class="mt-2 min-h-7 font-bold"></p>
+      </div>
+
+      <!-- Spam traps: a field people never see, and a timestamp set by script. -->
+      <div class="absolute -left-2500 size-px overflow-hidden" aria-hidden="true">
+        <label for="q-company">Leave this empty</label>
+        <input id="q-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="started" value="" />
+
+      <div class="flex flex-wrap items-center gap-5 sm:col-span-2">
+        <button type="submit" class="patch">Send my job ticket</button>
+        <p class="text-muted">We only use your details to reply. <a href="/privacy" class="underlined">Privacy</a></p>
+      </div>
+    </form>
+
+    <div class="grid content-start gap-8">
+      <div class="grid gap-1">
+        <h2 class="text-sub">Call</h2>
+        <p>Tel <a href={site.phoneHref} class="font-display text-2xl text-action">{site.phone}</a></p>
+        <p>Mob <a href={site.mobileHref} class="font-display text-2xl text-action">{site.mobile}</a></p>
+      </div>
+      <span class="stitch"></span>
+      <div class="grid gap-1">
+        <h2 class="text-sub">Email</h2>
+        <a href={site.emailHref} class="break-all text-action underlined">{site.email}</a>
+      </div>
+      <span class="stitch"></span>
+      <div class="grid gap-1">
+        <h2 class="text-sub">Opening hours</h2>
+        <OpenStatus />
+      </div>
+      <span class="stitch"></span>
+      <div class="grid justify-items-start gap-1">
+        <h2 class="text-sub">Find us</h2>
+        <address class="not-italic">{site.street}<br />{site.town} {site.postcode}</address>
+        <a href={site.directions} target="_blank" rel="noopener" class="font-bold text-action underlined">Get directions<span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+    </div>
+  </section>
+</Sample>
+
+<script>
+  import { MAX_PHOTOS, MAX_PHOTO_BYTES } from "@/lib/quote";
+
+  const form = document.querySelector<HTMLFormElement>("[data-quote]")!;
+  const picker = form.querySelector<HTMLInputElement>("#q-photos")!;
+  const status = form.querySelector<HTMLElement>("#q-photos-status")!;
+  const started = form.querySelector<HTMLInputElement>('input[name="started"]')!;
+  started.value = String(Date.now());
+
+  const LONGEST_EDGE = 1600;
+
+  async function shrink(file: File): Promise<File> {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, LONGEST_EDGE / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(bitmap.width * scale);
+      canvas.height = Math.round(bitmap.height * scale);
+      canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((done) => canvas.toBlob(done, "image/jpeg", 0.8));
+      return blob ? new File([blob], file.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" }) : file;
+    } catch {
+      return file;
+    }
+  }
+
+  picker.addEventListener("change", async () => {
+    const chosen = [...(picker.files ?? [])];
+    picker.setCustomValidity("");
+    status.textContent = "";
+    if (chosen.length === 0) return;
+
+    if (chosen.length > MAX_PHOTOS) {
+      const message = `Please choose ${MAX_PHOTOS} photos or fewer. You chose ${chosen.length}.`;
+      picker.setCustomValidity(message);
+      status.textContent = message;
+      return;
+    }
+
+    status.textContent = "Preparing your photos…";
+    const shrunk = await Promise.all(chosen.map(shrink));
+    const transfer = new DataTransfer();
+    shrunk.forEach((f) => transfer.items.add(f));
+    picker.files = transfer.files;
+
+    if (shrunk.reduce((sum, f) => sum + f.size, 0) > MAX_PHOTO_BYTES) {
+      const message = "These photos are too large to send. Please remove one and try again.";
+      picker.setCustomValidity(message);
+      status.textContent = message;
+      return;
+    }
+    status.textContent = `${shrunk.length} ${shrunk.length === 1 ? "photo" : "photos"} ready to send.`;
+  });
+</script>

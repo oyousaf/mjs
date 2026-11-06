@@ -1,0 +1,18 @@
+---
+import { PUBLIC_PREVIEW } from "astro:env/client";
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import { site } from "@/data/site";
+---
+
+<Sample title="Thanks | MJ’s Upholstery" description="Your job ticket has been received by MJ’s Upholstery.">
+  <SamplePage
+    tone="bottle"
+    title={PUBLIC_PREVIEW ? "That all checks out." : "Thanks, we’ve got your ticket."}
+    lead={PUBLIC_PREVIEW
+      ? `This form is still in preview, so nothing was sent or stored. To reach MJ’s, please call ${site.phone}.`
+      : `We’ll be in touch soon. If it’s urgent, call ${site.phone}.`}
+  >
+    <a href="/" class="patch patch-cream justify-self-start">Back to the home page</a>
+  </SamplePage>
+</Sample>

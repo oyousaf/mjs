@@ -1,0 +1,38 @@
+---
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import { reviews } from "@/data/reviews";
+import { site } from "@/data/site";
+---
+
+<Sample
+  title="Customer Reviews | MJ’s Upholstery, Bedford"
+  description="What customers say about MJ’s Upholstery in Bedford, from motorcycle seats and Toyota Supra retrims to leather suites and church kneelers."
+>
+  <SamplePage tone="panel" title="Reviews" lead="Received by post, by email, on Facebook and on Google." />
+
+  <section class="pinked bg-page py-14 gutter">
+    <div class="rail">
+      {
+        reviews.map((r) => (
+          <figure class="swatch grid gap-4 p-6">
+            <blockquote class="text-lg leading-relaxed">“{r.quote}”</blockquote>
+            <figcaption>
+              <span class="block font-display text-xl leading-tight">{r.name}</span>
+              <span class="text-muted">{r.about}{r.year && `, ${r.year}`}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="page-dark pinked grid gap-5 bg-bottle py-14 gutter">
+    <h2 class="text-title">Had work done by us?</h2>
+    <p class="max-w-xl text-xl leading-snug">We’d love to hear how it’s held up. You’re welcome to include photos.</p>
+    <div class="flex flex-wrap gap-3">
+      <a href={site.googleReviews} target="_blank" rel="noopener" class="patch patch-cream">Review us on Google<span class="sr-only"> (opens in a new tab)</span></a>
+      <a href={site.facebook} target="_blank" rel="noopener" class="patch patch-cream">Find us on Facebook<span class="sr-only"> (opens in a new tab)</span></a>
+    </div>
+  </section>
+</Sample>

@@ -1,0 +1,52 @@
+---
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import WorkList from "@/components/WorkList.astro";
+import Swatch from "@/components/Swatch.astro";
+import Lightbox from "@/components/Lightbox.astro";
+import SendPhotos from "@/components/SendPhotos.astro";
+import { jobs } from "@/data/work";
+import { review } from "@/data/reviews";
+
+const work = jobs.filter((j) => j.category !== "furniture");
+const steve = review("steve");
+---
+
+<Sample
+  title="Car Interiors and Convertible Hoods | MJ’s Upholstery, Bedford"
+  description="Modern and vintage car interiors in Bedford: seat repairs, full leather retrims, convertible hoods, headlining, carpets and bespoke overmats."
+>
+  <SamplePage
+    tone="oxblood"
+    title="Automotive"
+    lead="All areas of modern and vintage automotive interiors, from a cigarette burn on a seat to a full leather retrim."
+  />
+
+  <section class="pinked grid gap-6 bg-page py-14 gutter">
+    <h2 class="text-sub">What we do</h2>
+    <WorkList
+      items={[
+        "Seat repairs, including burns and tears",
+        "Full leather retrims",
+        "Convertible hood replacement",
+        "Hood window repairs",
+        "Headlining",
+        "Carpets",
+        "Bespoke carpet overmats, to fit all makes of car",
+      ]}
+    />
+  </section>
+
+  <section class="grid gap-6 py-14 gutter">
+    <h2 class="text-title">Recent trim work</h2>
+    <div class="rail">{work.map((j) => <Swatch job={j} />)}</div>
+  </section>
+
+  <figure class="page-dark pinked grid gap-4 bg-oxblood py-14 gutter">
+    <blockquote class="max-w-3xl font-display text-sub">“{steve.quote}”</blockquote>
+    <figcaption>{steve.name}, {steve.about.toLowerCase()}</figcaption>
+  </figure>
+
+  <SendPhotos line="A photo tells us most of what we need. Send one over and we’ll take a look." />
+  <Lightbox />
+</Sample>

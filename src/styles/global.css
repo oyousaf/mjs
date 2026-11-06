@@ -1,0 +1,456 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+  --focus: var(--color-action);
+  /* Depth of one pinking-shear tooth. */
+  --tooth: 0.625rem;
+}
+
+@theme {
+  --font-display: var(--font-gloock), "Times New Roman", serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.9rem, 7.4vw, 7.25rem);
+  --text-display--line-height: 0.98;
+  --text-title: clamp(2.4rem, 5.2vw, 4.75rem);
+  --text-title--line-height: 1.02;
+  --text-sub: clamp(1.5rem, 2.4vw, 2.1rem);
+  --text-sub--line-height: 1.12;
+
+  /* Named after the trade's materials. Every text pair is checked against AA in both themes. */
+  --color-page: light-dark(#f4f2ef, #171314);
+  --color-panel: light-dark(#e6e2de, #261f21);
+  --color-ink: light-dark(#1d1719, #f2ece8);
+  --color-muted: light-dark(#5a4f51, #b9aeab);
+  --color-action: light-dark(#7b1e2b, #f0a6a9);
+  --color-on-action: light-dark(#fff8f2, #2a0c11);
+  --color-brass: light-dark(#7d5a10, #d9ae55);
+  --color-rule: light-dark(#857778, #7c7072);
+  --color-danger: light-dark(#9b1c12, #ff9c8f);
+
+  /* Sample book pages keep their colour in both themes. */
+  --color-oxblood: #7b1e2b;
+  --color-bottle: #1e4b3e;
+  --color-hide: #5a4f51;
+  --color-stud: #7d5a10;
+  --color-hood: #171314;
+  --color-cream: #fff8f2;
+  --color-thread: #d9ae55;
+
+  --animate-heartbeat: heartbeat 1.6s ease-in-out infinite;
+  @keyframes heartbeat {
+    0%,
+    40%,
+    100% {
+      transform: scale(1);
+    }
+    15% {
+      transform: scale(1.25);
+    }
+    28% {
+      transform: scale(1.1);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-bottom: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-synthesis: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-thread);
+    color: var(--color-hood);
+  }
+}
+
+/* A coloured sample page. Light focus rings, because the ground is always dark. */
+@utility page-dark {
+  --focus: var(--color-thread);
+  color: var(--color-cream);
+}
+
+@utility gutter {
+  padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  @variant md {
+    padding-inline: 3rem;
+  }
+  @variant 2xl {
+    padding-inline: 5rem;
+  }
+}
+
+/* Cut with pinking shears: this page's top edge overlaps whatever came before it. */
+@utility pinked {
+  position: relative;
+  margin-top: calc(var(--tooth) * -1);
+  padding-top: var(--tooth);
+  mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--tooth)) 100%;
+}
+
+@utility underlined {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* A leather patch stitched to the page. The stitching sits inside, so focus rings stay clear of it. */
+.patch {
+  position: relative;
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  border-radius: 0.3rem;
+  background: var(--patch-bg, var(--color-action));
+  color: var(--patch-fg, var(--color-on-action));
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+
+.patch::after {
+  content: "";
+  position: absolute;
+  inset: 0.28rem;
+  border: 1.5px dashed currentColor;
+  border-radius: 0.15rem;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.patch:hover {
+  transform: translateY(-2px);
+}
+
+.patch-cream {
+  --patch-bg: var(--color-cream);
+  --patch-fg: #5e1420;
+}
+
+/* A run of contrast stitching. */
+.stitch {
+  display: block;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--stitch, var(--color-brass)) 0 0.65rem, transparent 0.65rem 1.05rem);
+}
+
+/* A swing tag tied on through a punched eyelet. Always paper-coloured. */
+.tag {
+  color-scheme: light;
+  --focus: var(--color-action);
+  position: relative;
+  background: var(--color-page);
+  color: var(--color-ink);
+  padding: 2.75rem 1.5rem 1.4rem;
+  clip-path: polygon(1.75rem 0, calc(100% - 1.75rem) 0, 100% 1.75rem, 100% 100%, 0 100%, 0 1.75rem);
+  mask: radial-gradient(circle 0.42rem at 50% 1.25rem, #0000 98%, #000) no-repeat;
+  filter: none;
+}
+
+.tag-shadow {
+  filter: drop-shadow(0 0.6rem 1rem rgb(0 0 0 / 0.35));
+  transform-origin: 50% 0.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tag-shadow {
+    animation: settle 1.6s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+  }
+
+  @keyframes settle {
+    0% {
+      rotate: 5deg;
+    }
+    35% {
+      rotate: -5.5deg;
+    }
+    65% {
+      rotate: -1.5deg;
+    }
+    100% {
+      rotate: -3deg;
+    }
+  }
+
+  @view-transition {
+    navigation: auto;
+  }
+
+  main {
+    view-transition-name: sample-page;
+  }
+
+  ::view-transition-old(sample-page) {
+    animation: 140ms ease-in both turn-out;
+  }
+
+  ::view-transition-new(sample-page) {
+    animation: 240ms ease-out both turn-in;
+  }
+
+  @keyframes turn-out {
+    to {
+      opacity: 0;
+      transform: translateX(-1.25rem);
+    }
+  }
+
+  @keyframes turn-in {
+    from {
+      opacity: 0;
+      transform: translateX(1.25rem);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag-shadow {
+    rotate: -3deg;
+  }
+
+  .patch {
+    transition: none;
+  }
+}
+
+/* The index tab for the current page reaches across to touch the page it opens. */
+.tabs a {
+  display: flex;
+  min-height: 2.9rem;
+  align-items: center;
+  margin-right: 1.1rem;
+  padding: 0.3rem 1rem 0.3rem 1.5rem;
+  border-radius: 0 0.3rem 0.3rem 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.1;
+  transition: margin-right 160ms ease;
+}
+
+.tabs a:hover {
+  margin-right: 0.45rem;
+}
+
+.tabs a[aria-current="page"] {
+  margin-right: 0;
+  border-radius: 0;
+}
+
+/* Sits above the fold on every page below the laptop size, so nothing hides behind it: see scroll-padding. */
+.menu-sheet {
+  width: 100%;
+  max-width: none;
+  max-height: 88dvh;
+  margin: auto 0 0;
+  border: 0;
+  padding: 0;
+  background: var(--color-hood);
+  color: var(--color-cream);
+  --focus: var(--color-thread);
+}
+
+.menu-sheet::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+/* Job ticket: ruled lines to write on, and a perforated tear-off top. */
+.ticket {
+  background: var(--color-panel);
+  mask:
+    radial-gradient(circle 0.3rem at 50% 0, #0000 98%, #000) 50% 0 / 1.05rem 1rem repeat-x,
+    linear-gradient(#000 0 0) 0 1rem no-repeat;
+}
+
+.ruled {
+  display: block;
+  width: 100%;
+  min-height: 3rem;
+  border: 0;
+  border-bottom: 2px solid var(--color-muted);
+  background: transparent;
+  padding: 0.5rem 0.1rem;
+  font-size: 1.0625rem;
+}
+
+select.ruled {
+  background: var(--color-panel);
+}
+
+.ruled:focus-visible {
+  outline-offset: 2px;
+}
+
+.ruled:user-invalid {
+  border-bottom-color: var(--color-danger);
+}
+
+textarea.ruled {
+  border: 2px solid var(--color-muted);
+  padding: 0.6rem 0.75rem;
+  background-image: repeating-linear-gradient(transparent 0 1.67rem, color-mix(in oklab, var(--color-muted) 28%, transparent) 1.67rem calc(1.67rem + 1px));
+  background-position: 0 0.55rem;
+  line-height: 1.7rem;
+}
+
+/* Two photos of the same job, with a seam you can move. */
+.compare {
+  --pos: 50%;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  isolation: isolate;
+}
+
+.compare-after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--pos));
+}
+
+.compare::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: var(--pos);
+  width: 2px;
+  background: repeating-linear-gradient(var(--color-thread) 0 0.65rem, transparent 0.65rem 1.05rem);
+  pointer-events: none;
+}
+
+.compare input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.compare input::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+
+.compare input::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+
+.compare input::-webkit-slider-thumb {
+  appearance: none;
+  width: 3rem;
+  height: 3rem;
+  margin-top: calc((var(--track-h, 100cqh) - 3rem) / 2);
+  border: 2px dashed #5e1420;
+  border-radius: 50%;
+  background: var(--color-cream);
+  box-shadow: 0 0.2rem 0.8rem rgb(0 0 0 / 0.45);
+}
+
+.compare input::-moz-range-thumb {
+  width: 3rem;
+  height: 3rem;
+  border: 2px dashed #5e1420;
+  border-radius: 50%;
+  background: var(--color-cream);
+  box-shadow: 0 0.2rem 0.8rem rgb(0 0 0 / 0.45);
+}
+
+.compare {
+  container-type: size;
+}
+
+.compare input:focus-visible {
+  outline: 3px solid var(--color-thread);
+  outline-offset: -6px;
+}
+
+/* Swatches hung in uneven columns, the way a real sample rail looks. */
+.rail {
+  columns: 1;
+  column-gap: 2rem;
+}
+
+@media (min-width: 40rem) {
+  .rail {
+    columns: 2;
+  }
+}
+
+@media (min-width: 96rem) {
+  .rail {
+    columns: 3;
+  }
+}
+
+.swatch {
+  break-inside: avoid;
+  margin-bottom: 2rem;
+  background: var(--color-panel);
+}
+
+.swatch:nth-child(3n + 1) {
+  rotate: -0.5deg;
+}
+
+.swatch:nth-child(3n + 2) {
+  rotate: 0.4deg;
+}
+
+.lightbox {
+  width: min(100% - 1.5rem, 76rem);
+  max-width: none;
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto;
+  border: 0;
+  padding: 0;
+  background: var(--color-hood);
+  color: var(--color-cream);
+  --focus: var(--color-thread);
+}
+
+.lightbox::backdrop {
+  background: rgb(0 0 0 / 0.82);
+}

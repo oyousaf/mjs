@@ -1,0 +1,18 @@
+---
+import { tones, type Tone } from "@/data/site";
+
+// The coloured opening of an inner page. It shares its colour with the index tab that opened it.
+interface Props {
+  tone: Tone;
+  title: string;
+  lead: string;
+}
+
+const { tone, title, lead } = Astro.props;
+---
+
+<header class:list={[tones[tone], "grid gap-5 py-14 gutter md:py-20"]}>
+  <h1 class="text-display">{title}</h1>
+  <p class="max-w-2xl text-xl leading-snug">{lead}</p>
+  <slot />
+</header>

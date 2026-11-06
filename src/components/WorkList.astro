@@ -1,0 +1,19 @@
+---
+// What's offered, set out like the running order on a job sheet.
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="grid max-w-3xl">
+  {
+    items.map((item) => (
+      <li class="grid gap-3 pt-3 text-lg leading-snug">
+        {item}
+        <span class="stitch" />
+      </li>
+    ))
+  }
+</ul>

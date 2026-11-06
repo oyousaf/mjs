@@ -1,0 +1,52 @@
+---
+import { Picture, getImage } from "astro:assets";
+import { photo, type Job } from "@/data/work";
+
+interface Props {
+  job: Job;
+}
+
+const { job } = Astro.props;
+const [lead, ...rest] = job.photos;
+const large = await Promise.all(job.photos.map((p) => getImage({ src: photo(p.file), width: 1600, format: "webp" })));
+const formats: ("avif" | "webp")[] = ["avif", "webp"];
+---
+
+<article class="swatch" data-job data-category={job.category}>
+  <a href={large[0]?.src} data-lightbox data-title={job.title} class="relative block">
+    <Picture
+      src={photo(lead!.file)}
+      alt={lead!.alt}
+      formats={formats}
+      widths={[480, 800, 1100]}
+      sizes="(min-width: 96rem) 28vw, (min-width: 64rem) 36vw, (min-width: 40rem) 46vw, 100vw"
+      loading="lazy"
+      class="h-auto w-full"
+    />
+    {lead!.label && <span class="absolute top-3 left-3 bg-hood px-2 py-0.5 text-sm font-bold text-cream">{lead!.label}</span>}
+  </a>
+  {
+    rest.length > 0 && (
+      <div class:list={["mt-1 grid gap-1", rest.length > 1 ? "grid-cols-2" : "grid-cols-1"]}>
+        {rest.map((p, i) => (
+          <a href={large[i + 1]?.src} data-lightbox data-title={job.title} class="relative block">
+            <Picture
+              src={photo(p.file)}
+              alt={p.alt}
+              formats={formats}
+              widths={[320, 640]}
+              sizes="(min-width: 64rem) 22vw, 50vw"
+              loading="lazy"
+              class="aspect-3/2 w-full object-cover"
+            />
+            {p.label && <span class="absolute top-2 left-2 bg-hood px-2 py-0.5 text-sm font-bold text-cream">{p.label}</span>}
+          </a>
+        ))}
+      </div>
+    )
+  }
+  <div class="grid gap-1 px-4 pt-3 pb-4">
+    <h3 class="text-xl leading-tight">{job.title}</h3>
+    <p class="text-base text-muted">{job.note}</p>
+  </div>
+</article>

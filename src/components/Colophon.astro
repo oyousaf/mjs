@@ -1,0 +1,35 @@
+---
+import { site } from "@/data/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="page-dark pinked bg-hood">
+  <div class="grid gap-10 py-14 gutter md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+    <div class="grid content-start gap-4">
+      <p class="font-display text-sub">{site.name}</p>
+      <p class="max-w-md">{site.trade}. {site.experience} in automotive and furniture upholstery.</p>
+      <address class="not-italic">{site.street}<br />{site.town} {site.postcode}</address>
+    </div>
+    <ul class="grid content-start gap-2">
+      <li>Tel <a href={site.phoneHref} class="underlined">{site.phone}</a></li>
+      <li>Mob <a href={site.mobileHref} class="underlined">{site.mobile}</a></li>
+      <li><a href={site.emailHref} class="underlined break-all">{site.email}</a></li>
+      <li>
+        <a href={site.facebook} target="_blank" rel="noopener" class="underlined">Facebook<span class="sr-only"> (opens in a new tab)</span></a>
+      </li>
+      <li>
+        <a href={site.googleReviews} target="_blank" rel="noopener" class="underlined">Google reviews<span class="sr-only"> (opens in a new tab)</span></a>
+      </li>
+    </ul>
+  </div>
+  <div class="gutter"><span class="stitch [--stitch:var(--color-thread)]"></span></div>
+  <div class="flex flex-wrap justify-between gap-x-8 gap-y-2 py-5 text-sm gutter">
+    <p>&copy; {year} {site.name}</p>
+    <a href="/privacy" class="underlined">Privacy</a>
+    <p>
+      Built with <span class="inline-block motion-safe:animate-heartbeat" role="img" aria-label="love">💚</span> by{" "}
+      <a href="https://legxcysol.dev" target="_blank" rel="noopener" class="underlined">Legxcy Solutions<span class="sr-only"> (opens in a new tab)</span></a>
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,31 @@
+---
+import { site } from "@/data/site";
+---
+
+<p class="leading-snug">
+  <span data-open-status class="block min-h-6 font-bold"></span>
+  {site.hours}
+</p>
+
+<script>
+  const OPEN_DAYS = ["Mon", "Tue", "Wed", "Thu"];
+  const OPENS = 9;
+  const CLOSES = 17;
+
+  const now = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    weekday: "short",
+    hour: "numeric",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const day = now.find((p) => p.type === "weekday")?.value ?? "";
+  const hour = Number(now.find((p) => p.type === "hour")?.value ?? 0);
+
+  const opensToday = OPEN_DAYS.includes(day);
+  let status = "Closed. Opens Monday at 9am";
+  if (opensToday && hour >= OPENS && hour < CLOSES) status = "Open until 5pm today";
+  else if (opensToday && hour < OPENS) status = "Closed. Opens today at 9am";
+  else if (opensToday && day !== "Thu") status = "Closed. Opens tomorrow at 9am";
+
+  document.querySelectorAll("[data-open-status]").forEach((el) => (el.textContent = status));
+</script>

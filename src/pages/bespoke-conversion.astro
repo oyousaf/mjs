@@ -1,0 +1,44 @@
+---
+import { Picture } from "astro:assets";
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import SendPhotos from "@/components/SendPhotos.astro";
+import { photo } from "@/data/work";
+
+const stages = [
+  { file: "chair-parts", alt: "A flat-packed dark wooden chair laid out on the workbench", title: "Before assembly", wide: true },
+  { file: "chair-assembled", alt: "The standard dining chair assembled on the bench", title: "The standard chair, assembled", wide: false },
+  { file: "chair-reshaping", alt: "The chair with a new taller back and a foam seat being fitted", title: "Changing the chair’s design", wide: false },
+  { file: "chair-finished", alt: "The finished chair with a tall back in striped fabric", title: "The finished chair", wide: true },
+];
+---
+
+<Sample
+  title="Bespoke Chair Conversions | MJ’s Upholstery, Bedford"
+  description="MJ’s bespoke chair conversion service turns a basic wooden dining chair into something else entirely. See the stages and ask for advice."
+>
+  <SamplePage tone="stud" title="Bespoke chairs" lead="A basic wooden dining chair doesn’t have to stay that way. Here’s what can be done with one." />
+
+  <section class="pinked bg-page py-14 gutter">
+    <ol class="grid items-end gap-x-6 gap-y-10 md:grid-cols-2">
+      {
+        stages.map((stage, i) => (
+          <li class="grid gap-3">
+            <Picture
+              src={photo(stage.file)}
+              alt={stage.alt}
+              formats={["avif", "webp"]}
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 64rem) 36vw, (min-width: 48rem) 46vw, 100vw"
+              loading={i === 0 ? "eager" : "lazy"}
+              class:list={[stage.wide ? "aspect-16/10" : "aspect-3/4 max-h-168", "w-full object-cover"]}
+            />
+            <h2 class="text-sub">{i + 1}. {stage.title}</h2>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <SendPhotos line="Have a chair in mind? Ask us what can be done with it." />
+</Sample>

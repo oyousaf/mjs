@@ -1,0 +1,18 @@
+---
+import { tabs, tones } from "@/data/site";
+
+const here = Astro.url.pathname.replace(/\/$/, "");
+const isCurrent = (href: string) => here === href || here.startsWith(`${href}/`);
+---
+
+<ul class="tabs grid gap-1">
+  {
+    tabs.map((tab) => (
+      <li>
+        <a href={tab.href} aria-current={isCurrent(tab.href) ? "page" : undefined} class={tones[tab.tone]}>
+          {tab.label}
+        </a>
+      </li>
+    ))
+  }
+</ul>

@@ -1,0 +1,50 @@
+<dialog id="lightbox" class="lightbox" closedby="any" aria-label="Photo viewer">
+  <figure class="grid gap-0">
+    <img data-lightbox-image alt="" class="max-h-[calc(100dvh-7rem)] w-full object-contain" />
+    <figcaption class="flex flex-wrap items-center justify-between gap-3 p-3">
+      <span data-lightbox-caption class="min-w-0 grow basis-60"></span>
+      <span class="flex gap-1">
+        <button type="button" data-lightbox-prev class="min-h-11 cursor-pointer px-3 font-bold underlined">Previous</button>
+        <button type="button" data-lightbox-next class="min-h-11 cursor-pointer px-3 font-bold underlined">Next</button>
+        <button type="button" data-lightbox-close class="min-h-11 cursor-pointer px-3 font-bold underlined">Close</button>
+      </span>
+    </figcaption>
+  </figure>
+</dialog>
+
+<script>
+  const box = document.querySelector<HTMLDialogElement>("#lightbox")!;
+  const image = box.querySelector<HTMLImageElement>("[data-lightbox-image]")!;
+  const caption = box.querySelector<HTMLElement>("[data-lightbox-caption]")!;
+  let index = 0;
+
+  // Skips anything the gallery filter has hidden.
+  const links = () =>
+    [...document.querySelectorAll<HTMLAnchorElement>("a[data-lightbox]")].filter((a) => !a.closest("[hidden]"));
+
+  function show(i: number) {
+    const all = links();
+    index = (i + all.length) % all.length;
+    const link = all[index]!;
+    const alt = link.querySelector("img")?.alt ?? "";
+    image.src = link.href;
+    image.alt = alt;
+    caption.textContent = `${link.dataset.title}. ${alt}`;
+  }
+
+  document.addEventListener("click", (event) => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>("a[data-lightbox]");
+    if (!link) return;
+    event.preventDefault();
+    show(links().indexOf(link));
+    box.showModal();
+  });
+
+  box.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => show(index - 1));
+  box.querySelector("[data-lightbox-next]")?.addEventListener("click", () => show(index + 1));
+  box.querySelector("[data-lightbox-close]")?.addEventListener("click", () => box.close());
+  box.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") show(index - 1);
+    if (event.key === "ArrowRight") show(index + 1);
+  });
+</script>

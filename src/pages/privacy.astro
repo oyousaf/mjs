@@ -1,0 +1,34 @@
+---
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import { site } from "@/data/site";
+
+const updated = "November 2026";
+---
+
+<Sample title="Privacy | MJ’s Upholstery" description="How MJ’s Upholstery handles the details you send through this website.">
+  <SamplePage tone="page" title="Privacy" lead={`Last updated ${updated}.`} />
+
+  <section class="grid max-w-3xl gap-8 pb-16 gutter">
+    <div class="grid gap-2">
+      <h2 class="text-sub">What we collect</h2>
+      <p>If you send a job ticket, we get your name, email address, your phone number if you give it, what you tell us about the job, and any photos you attach. The site doesn’t collect anything else.</p>
+    </div>
+    <div class="grid gap-2">
+      <h2 class="text-sub">What we use it for</h2>
+      <p>We use your details to reply to you and quote for the work. That’s our only reason for having them, and we don’t use them for marketing or sell them.</p>
+    </div>
+    <div class="grid gap-2">
+      <h2 class="text-sub">Who handles it</h2>
+      <p>Tickets reach us by email through Resend. The site is hosted by Vercel, which keeps standard technical logs to run it.</p>
+    </div>
+    <div class="grid gap-2">
+      <h2 class="text-sub">Cookies and tracking</h2>
+      <p>This site doesn’t use cookies, analytics or advertising trackers. Links to Facebook and Google take you to those sites, which have their own policies.</p>
+    </div>
+    <div class="grid gap-2">
+      <h2 class="text-sub">Your rights</h2>
+      <p>You can ask to see, correct or delete what we hold about you by emailing <a href={site.emailHref} class="break-all text-action underlined">{site.email}</a>. If you’re unhappy with how we’ve handled it, you can complain to the Information Commissioner’s Office at <a href="https://ico.org.uk" target="_blank" rel="noopener" class="text-action underlined">ico.org.uk<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+    </div>
+  </section>
+</Sample>

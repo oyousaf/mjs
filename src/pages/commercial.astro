@@ -1,0 +1,44 @@
+---
+import { Picture } from "astro:assets";
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import WorkList from "@/components/WorkList.astro";
+import SendPhotos from "@/components/SendPhotos.astro";
+import { photo } from "@/data/work";
+import { review } from "@/data/reviews";
+
+const noel = review("noel");
+---
+
+<Sample
+  title="Commercial Upholstery | MJ’s Upholstery, Bedford"
+  description="Commercial upholstery in Bedford for restaurant and bar seating, hospital furniture and care home seating."
+>
+  <SamplePage tone="hide" title="Commercial" lead="Seating that gets used hard, trimmed by people who’ve been doing it for over 45 years." />
+
+  <section class="pinked grid gap-10 bg-page py-14 gutter xl:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] xl:items-start">
+    <div class="grid gap-6">
+      <h2 class="text-sub">Who we work for</h2>
+      <WorkList items={["Restaurant and bar seating", "Hospital furniture", "Care home seating"]} />
+    </div>
+    <figure class="grid gap-2">
+      <Picture
+        src={photo("banquette-corner")}
+        alt="Charcoal deep-buttoned banquette built into grey cabinets"
+        formats={["avif", "webp"]}
+        widths={[640, 960, 1400]}
+        sizes="(min-width: 80rem) 52vw, 100vw"
+        loading="eager"
+        class="aspect-4/3 w-full object-cover"
+      />
+      <figcaption class="text-muted">Deep-buttoned banquette seating, the kind that suits a restaurant or bar.</figcaption>
+    </figure>
+  </section>
+
+  <figure class="page-dark pinked grid gap-4 bg-hide py-14 gutter">
+    <blockquote class="max-w-4xl font-display text-sub">“{noel.quote}”</blockquote>
+    <figcaption>{noel.name}, {noel.about.toLowerCase()}, {noel.year}</figcaption>
+  </figure>
+
+  <SendPhotos line="Got a room full of seats to do? Tell us what you have and when it needs to be ready." />
+</Sample>

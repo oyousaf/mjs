@@ -1,0 +1,59 @@
+---
+import Sample from "@/layouts/Sample.astro";
+import SamplePage from "@/components/SamplePage.astro";
+import WorkList from "@/components/WorkList.astro";
+import Swatch from "@/components/Swatch.astro";
+import Compare from "@/components/Compare.astro";
+import Lightbox from "@/components/Lightbox.astro";
+import SendPhotos from "@/components/SendPhotos.astro";
+import { jobs } from "@/data/work";
+import { review } from "@/data/reviews";
+
+const work = jobs.filter((j) => j.category === "furniture" && j.id !== "headboard");
+const robert = review("robert");
+---
+
+<Sample
+  title="Furniture Upholstery and Re-covering | MJ’s Upholstery, Bedford"
+  description="A full furniture upholstery service in Bedford: frame and spring repairs, cushion refilling, complete re-covering of suites, and bespoke headboards and stools."
+>
+  <SamplePage
+    tone="bottle"
+    title="Furniture"
+    lead="A full furniture upholstery service, with a wide range of fabrics from leading suppliers to recover what you already have."
+  />
+
+  <section class="pinked grid gap-10 bg-page py-14 gutter xl:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
+    <div class="grid content-start gap-6">
+      <h2 class="text-sub">What we do</h2>
+      <WorkList
+        items={[
+          "Framework and spring repairs",
+          "Cushion refilling",
+          "Complete recovering of suites",
+          "Bespoke headboards and stools",
+        ]}
+      />
+    </div>
+    <Compare
+      before="headboard-before"
+      after="headboard-after"
+      beforeAlt="A headboard before, in plain dark grey"
+      afterAlt="The same headboard after, in a buttoned magenta and grey checkerboard"
+      sizes="(min-width: 80rem) 52vw, 100vw"
+    />
+  </section>
+
+  <section class="grid gap-6 py-14 gutter">
+    <h2 class="text-title">From the workshop</h2>
+    <div class="rail">{work.map((j) => <Swatch job={j} />)}</div>
+  </section>
+
+  <figure class="page-dark pinked grid gap-4 bg-bottle py-14 gutter">
+    <blockquote class="max-w-4xl font-display text-sub">“{robert.quote}”</blockquote>
+    <figcaption>{robert.name}, {robert.year}</figcaption>
+  </figure>
+
+  <SendPhotos line="Worth saving? Send a photo of the piece and we’ll tell you what can be done." />
+  <Lightbox />
+</Sample>

@@ -1,0 +1,17 @@
+---
+import { site } from "@/data/site";
+
+interface Props {
+  line: string;
+}
+
+const { line } = Astro.props;
+---
+
+<section class="flex flex-wrap items-center justify-between gap-6 bg-panel py-12 gutter">
+  <h2 class="max-w-2xl text-sub">{line}</h2>
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+    <a href="/contact" class="patch">Send photos for a quote</a>
+    <a href={site.phoneHref} class="font-display text-2xl">{site.phone}</a>
+  </div>
+</section>

@@ -1,0 +1,224 @@
+---
+import { Picture } from "astro:assets";
+import Sample from "@/layouts/Sample.astro";
+import Compare from "@/components/Compare.astro";
+import OpenStatus from "@/components/OpenStatus.astro";
+import { site } from "@/data/site";
+import { photo } from "@/data/work";
+import { review } from "@/data/reviews";
+
+const formats: ("avif" | "webp")[] = ["avif", "webp"];
+const dean = review("dean");
+
+const hoodSteps = [
+  { file: "hood-cutting", alt: "Tan canvas laid out on the cutting table with a clear window set into it", caption: "The canvas is cut, and the window set in." },
+  { file: "hood-frame", alt: "The tan canvas draped over the car’s hood frame in the workshop", caption: "It’s offered up to the frame." },
+  { file: "hood-fitted", alt: "The canvas pulled tight over the frame, with clear side windows", caption: "It’s pulled tight and fixed down." },
+  { file: "hood-finished", alt: "The finished tan hood on the navy vintage car", caption: "And back on the car, finished." },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: site.name,
+  description: `${site.trade} in ${site.town}`,
+  url: "https://mjs.legxcysol.dev",
+  telephone: "+441234359977",
+  email: site.email,
+  image: "https://mjs.legxcysol.dev/og.jpg",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.street,
+    addressLocality: site.town,
+    postalCode: site.postcode,
+    addressCountry: "GB",
+  },
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    opens: "09:00",
+    closes: "17:00",
+  },
+  sameAs: [site.facebook],
+};
+---
+
+<Sample
+  title="MJ’s Upholstery | Car Interiors and Furniture Upholstery, Bedford"
+  description="Upholsterers and coachtrimmers in Bedford with over 45 years of experience. Car interiors, convertible hoods, furniture and commercial seating. Call 01234 359977."
+  {jsonLd}
+>
+  <section>
+    <div class="grid gap-6 py-10 gutter md:py-14">
+      <h1 class="text-display max-w-[15ch]">From a cigarette burn to a full leather retrim.</h1>
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+        <a href="/contact" class="patch">Send photos for a quote</a>
+        <p>Or call <a href={site.phoneHref} class="font-display text-2xl text-action">{site.phone}</a></p>
+      </div>
+    </div>
+
+    <div class="relative">
+      <Picture
+        src={photo("camper-rear")}
+        alt="A camper van interior retrimmed in bright red, with a wide rear bench and two front seats beyond it"
+        formats={formats}
+        widths={[640, 960, 1400, 2000]}
+        sizes="(min-width: 64rem) calc(100vw - 17rem), 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="aspect-4/3 w-full object-cover sm:aspect-2/1"
+      />
+      <div class="tag-shadow relative z-10 mx-auto -mt-14 w-[min(21rem,calc(100%-2.5rem))] -rotate-3 motion-safe:rotate-0 md:absolute md:-top-22 md:right-12 md:mt-0">
+        <div class="tag">
+          <p class="font-display text-2xl leading-tight">{site.name}</p>
+          <span class="stitch my-3"></span>
+          <p class="leading-snug">{site.trade} in {site.town}. {site.experience}, in all areas of automotive and furniture upholstery.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-dark pinked -mt-2 bg-oxblood md:mt-[calc(var(--tooth)*-1)]">
+    <div class="grid gap-10 pt-16 pb-20 gutter xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:items-end">
+      <div class="grid gap-6">
+        <h2 class="text-title"><a href="/automotive" class="underlined">Automotive</a></h2>
+        <p class="max-w-xl text-xl leading-snug">Modern and vintage interiors, hoods and carpets, and the seats off motorcycles and boats too.</p>
+        <ul class="grid gap-1 text-lg">
+          <li>Seat repairs and full leather retrims</li>
+          <li>Convertible hoods and hood windows</li>
+          <li>Headlining and carpets</li>
+          <li>Bespoke overmats for all makes of car</li>
+        </ul>
+      </div>
+      <Picture
+        src={photo("subaru-seats")}
+        alt="Blue and cream front seats with panelled stitching, seen through the open door of a blue Subaru"
+        formats={formats}
+        widths={[640, 960, 1400]}
+        sizes="(min-width: 80rem) 42vw, 100vw"
+        loading="lazy"
+        class="aspect-4/3 w-full object-cover"
+      />
+    </div>
+  </section>
+
+  <section class="page-dark pinked bg-bottle">
+    <div class="grid gap-10 pt-16 pb-20 gutter xl:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] xl:items-center">
+      <div class="xl:order-2 grid gap-6">
+        <h2 class="text-title"><a href="/furniture" class="underlined">Furniture</a></h2>
+        <p class="max-w-xl text-xl leading-snug">Frames and springs repaired, cushions refilled, and whole suites recovered, in fabrics from leading suppliers.</p>
+        <p class="max-w-xl">Drag the seam across this headboard to see what a change of cover can do.</p>
+      </div>
+      <Compare
+        before="headboard-before"
+        after="headboard-after"
+        beforeAlt="A headboard before, in plain dark grey"
+        afterAlt="The same headboard after, in a buttoned magenta and grey checkerboard"
+        sizes="(min-width: 80rem) 48vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <section class="page-dark pinked bg-hide">
+    <div class="grid gap-10 pt-16 pb-20 gutter xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:items-center">
+      <div class="grid gap-6">
+        <h2 class="text-title"><a href="/commercial" class="underlined">Commercial</a></h2>
+        <p class="max-w-xl text-xl leading-snug">Seating for restaurants and bars, hospital furniture and care homes.</p>
+      </div>
+      <Picture
+        src={photo("banquette-kitchen")}
+        alt="Charcoal deep-buttoned banquette wrapping around a dining table"
+        formats={formats}
+        widths={[640, 960, 1400]}
+        sizes="(min-width: 80rem) 42vw, 100vw"
+        loading="lazy"
+        class="aspect-16/10 w-full object-cover"
+      />
+    </div>
+  </section>
+
+  <section class="page-dark pinked bg-stud">
+    <div class="grid gap-8 pt-16 pb-20 gutter">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 class="text-title"><a href="/bespoke-conversion" class="underlined">Bespoke chairs</a></h2>
+        <p class="max-w-md text-xl leading-snug">What can be done with a basic wooden dining chair.</p>
+      </div>
+      <div class="grid grid-cols-2 items-end gap-3 md:grid-cols-[3fr_2fr_2fr_3fr]">
+        {
+          [
+            ["chair-parts", "A flat-packed dark wooden chair laid out on the bench", "aspect-4/5 md:aspect-16/10"],
+            ["chair-assembled", "The standard chair assembled", "aspect-4/5 md:aspect-9/14"],
+            ["chair-reshaping", "The chair’s design being changed, with a taller striped back", "aspect-4/5 md:aspect-9/14"],
+            ["chair-finished", "The finished high-backed striped chair", "aspect-4/5 md:aspect-16/10"],
+          ].map(([file, alt, ratio]) => (
+            <Picture
+              src={photo(file!)}
+              alt={alt!}
+              formats={formats}
+              widths={[360, 640]}
+              sizes="(min-width: 48rem) 25vw, 50vw"
+              loading="lazy"
+              class:list={[ratio, "w-full object-cover"]}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="pinked bg-page">
+    <div class="grid gap-10 pt-16 pb-20 gutter">
+      <div class="grid gap-3">
+        <h2 class="text-title max-w-[16ch]">A new hood, from the cutting table up.</h2>
+        <p class="max-w-xl text-xl leading-snug">A vintage Morris Minor, in four stages.</p>
+      </div>
+      <ol class="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
+        {
+          hoodSteps.map((step, i) => (
+            <li class:list={["grid content-start gap-2", i % 2 === 1 && "xl:mt-16"]}>
+              <Picture
+                src={photo(step.file)}
+                alt={step.alt}
+                formats={formats}
+                widths={[360, 640, 900]}
+                sizes="(min-width: 80rem) 20vw, (min-width: 40rem) 46vw, 100vw"
+                loading="lazy"
+                class="aspect-4/3 w-full object-cover"
+              />
+              <p class="font-display text-xl leading-tight">{step.caption}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <a href="/gallery" class="justify-self-start text-lg font-bold text-action underlined">See more of the work in the gallery</a>
+    </div>
+  </section>
+
+  <section class="page-dark pinked bg-hood">
+    <figure class="grid gap-6 py-20 gutter">
+      <blockquote class="max-w-[24ch] font-display text-title">“Me sitting on the most photographed motorbike in the Dales.”</blockquote>
+      <figcaption class="grid max-w-2xl gap-3 text-lg leading-snug">
+        <p>{dean.name} took his Victory Vision to Yorkshire with a new seat from Maz, and that was the Facebook tag by Saturday.</p>
+        <a href="/reviews" class="justify-self-start font-bold underlined">Read what other customers say</a>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="pinked bg-panel">
+    <div class="grid gap-8 pt-14 pb-16 gutter md:grid-cols-3">
+      <div class="grid content-start gap-2">
+        <h2 class="text-sub">Find the workshop</h2>
+        <address class="not-italic">{site.street}<br />{site.town} {site.postcode}</address>
+        <a href={site.directions} target="_blank" rel="noopener" class="font-bold text-action underlined">Get directions<span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+      <div class="grid content-start gap-2">
+        <h2 class="text-sub">Opening hours</h2>
+        <OpenStatus />
+      </div>
+      <div class="grid content-start gap-2">
+        <h2 class="text-sub">Call Maz</h2>
+        <p>Tel <a href={site.phoneHref} class="font-bold text-action underlined">{site.phone}</a><br />Mob <a href={site.mobileHref} class="font-bold text-action underlined">{site.mobile}</a></p>
+      </div>
+    </div>
+  </section>
+</Sample>

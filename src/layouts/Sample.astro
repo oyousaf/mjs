@@ -1,0 +1,111 @@
+---
+import { Font, Image } from "astro:assets";
+import { PUBLIC_INDEXABLE } from "astro:env/client";
+import logo from "@/assets/logo.png";
+import IndexTabs from "@/components/IndexTabs.astro";
+import OpenStatus from "@/components/OpenStatus.astro";
+import Colophon from "@/components/Colophon.astro";
+import { site } from "@/data/site";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, jsonLd } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og.jpg", Astro.site);
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {!PUBLIC_INDEXABLE && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#171314" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <Font cssVariable="--font-gloock" preload />
+    <Font cssVariable="--font-hanken" preload />
+    {PUBLIC_INDEXABLE && jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class="pb-20 lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:pb-0">
+    <a
+      href="#main"
+      class="sr-only bg-thread px-5 py-3 font-bold text-hood focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-60"
+      >Skip to content</a
+    >
+
+    <!-- The binding of the sample book on laptops and up. On phones it folds down into the bars below. -->
+    <aside class="page-dark sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto bg-hood py-6 lg:flex">
+      <a href="/" class="mx-6 block">
+        <Image src={logo} width={208} densities={[1, 2]} alt={`${site.name}, home`} loading="eager" fetchpriority="high" class="h-auto w-52" />
+      </a>
+      <nav aria-label="Main"><IndexTabs /></nav>
+      <div class="mx-6 mt-auto grid gap-3 text-sm">
+        <a href={site.phoneHref} class="font-display text-2xl leading-tight">{site.phone}</a>
+        <OpenStatus />
+        <a href="/contact" class="patch patch-cream text-base">Get a quote</a>
+      </div>
+    </aside>
+
+    <div class="min-w-0">
+      <header class="page-dark flex items-center justify-between gap-4 bg-hood py-3 gutter lg:hidden">
+        <a href="/" class="block">
+          <Image src={logo} width={112} densities={[1, 2, 3]} alt={`${site.name}, home`} loading="eager" class="h-auto w-28" />
+        </a>
+        <p class="text-right text-sm leading-snug">{site.trade}<br />{site.town}</p>
+      </header>
+
+      <main id="main">
+        <slot />
+      </main>
+
+      <Colophon />
+    </div>
+
+    <!-- Kept within thumb reach on phones. -->
+    <nav aria-label="Quick actions" class="page-dark fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 gap-px bg-thread/40 pb-[env(safe-area-inset-bottom,0px)] font-bold lg:hidden">
+      <a href={site.phoneHref} class="flex min-h-15 items-center justify-center bg-hood">Call</a>
+      <a href="/contact" class="flex min-h-15 items-center justify-center bg-oxblood">Get a quote</a>
+      <button type="button" command="show-modal" commandfor="menu" data-menu-open class="flex min-h-15 cursor-pointer items-center justify-center bg-hood font-bold">
+        Menu
+      </button>
+    </nav>
+
+    <dialog id="menu" closedby="any" aria-label="Menu" class="menu-sheet">
+      <div class="grid gap-4 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))]">
+        <div class="flex items-center justify-between pl-6 pr-4">
+          <a href="/" class="font-display text-2xl">Home</a>
+          <button type="button" command="close" commandfor="menu" data-menu-close class="flex min-h-11 cursor-pointer items-center px-4 font-bold underlined">Close</button>
+        </div>
+        <nav aria-label="Menu"><IndexTabs /></nav>
+      </div>
+    </dialog>
+
+    <script>
+      // Fallback for browsers without invoker commands.
+      if (!("commandForElement" in HTMLButtonElement.prototype)) {
+        const menu = document.querySelector<HTMLDialogElement>("#menu");
+        document.querySelector("[data-menu-open]")?.addEventListener("click", () => menu?.showModal());
+        document.querySelector("[data-menu-close]")?.addEventListener("click", () => menu?.close());
+      }
+    </script>
+  </body>
+</html>
