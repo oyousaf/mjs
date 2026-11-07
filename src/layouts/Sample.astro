@@ -7,6 +7,7 @@ import OpenStatus from "@/components/OpenStatus.astro";
 import Colophon from "@/components/Colophon.astro";
 import { site } from "@/data/site";
 import "@/styles/global.css";
+import ScrollTop from '../components/ScrollTop.astro';
 
 interface Props {
   title: string;
@@ -107,5 +108,6 @@ const ogImage = new URL("/og.jpg", Astro.site);
         document.querySelector("[data-menu-close]")?.addEventListener("click", () => menu?.close());
       }
     </script>
+    <ScrollTop />
   </body>
 </html>
